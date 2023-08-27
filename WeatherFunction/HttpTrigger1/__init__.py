@@ -4,6 +4,7 @@ import azure.functions as func
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
     API_URL = "http://api.openweathermap.org/data/2.5/weather"
+    # env variable to protect API Key
     API_KEY = os.environ.get("WEATHER_API_KEY")
     WINNIPEG_ID = "6183235"  # City ID for Winnipeg
 
