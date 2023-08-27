@@ -13,23 +13,11 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-
-    - name: Install jq
-      run: sudo apt-get install jq
-     
-    - name: Parse Azure credentials
-      id: creds
-      run: |
-        echo "::set-output name=client_id::$(echo ${{ secrets.AZURE_CREDENTIALS }} | jq -r .clientId)"
-        echo "::set-output name=client_secret::$(echo ${{ secrets.AZURE_CREDENTIALS }} | jq -r .clientSecret)"
-        echo "::set-output name=subscription_id::$(echo ${{ secrets.AZURE_CREDENTIALS }} | jq -r .subscriptionId)"
-        echo "::set-output name=tenant_id::$(echo ${{ secrets.AZURE_CREDENTIALS }} | jq -r .tenantId)"
-    
     - name: Login to Azure
-      run: |
-        az login --service-principal -u ${{ steps.creds.outputs.client_id }} -p ${{ steps.creds.outputs.client_secret }} --tenant ${{ steps.creds.outputs.tenant_id }}
-        az account set --subscription
-    
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
     - name: Build and push Docker image to Azure Container Registry
       run: |
         docker build -t ${{ secrets.AZURE_REGISTRY_LOGIN_SERVER }}/weatherapp:latest .
