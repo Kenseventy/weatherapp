@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="header-box">
+        ☁️ KM Cloud Technologies Weather App ☀️
+    </div>
+    <div class="search-bar">
+        <input type="text" placeholder="Enter city name...">
+        <button>Search</button>
+    </div>
+    <div class="display-area">
+        <!-- Weather data will be displayed here -->
+    </div>
+    <div class="alert-box">
+        <h2>Sweater Alert</h2>
+    {% if alert %}
+<div class="alert-box">
+    {{ alert }}
+</div>
+</div>
+{% endif %}
+</div>
+{% endblock %}
+
+

@@ -1,0 +1,37 @@
+# Python
+*.pyc
+*.pyo
+*.egg-info/
+__pycache__/
+*.log
+
+# Virtual environment
+myenv/
+*.venv
+*.virtualenv
+venv/
+.env/
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfvars
+.terraform.lock.hcl
+
+# Azure Function
+.local/
+.python_packages/
+local.settings.json
+HttpTrigger1/__pycache__/
+
+# Miscellaneous
+.DS_Store   # For Mac users
+*.log       # Log files
+*.swp       # For Vim users
+*.swo       # For Vim users
+*.idea/     # For PyCharm users
+
+# If you create any secrets file (not recommended, but just in case)
+secrets.*
+
