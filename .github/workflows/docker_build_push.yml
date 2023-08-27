@@ -13,10 +13,18 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
+    - name: Parse Azure credentials
+      id: creds
+      run: |
+        echo "::set-output name=client_id::$(echo ${{ secrets.AZURE_CREDENTIALS }} | jq -r .clientId)"
+        echo "::set-output name=client_secret::$(echo ${{ secrets.AZURE_CREDENTIALS }} | jq -r .clientSecret)"
+        echo "::set-output name=subscription_id::$(echo ${{ secrets.AZURE_CREDENTIALS }} | jq -r .subscriptionId)"
+        echo "::set-output name=tenant_id::$(echo ${{ secrets.AZURE_CREDENTIALS }} | jq -r .tenantId)"
+    
     - name: Login to Azure
       run: |
-        az login --service-principal -u ${{ secrets.ARM_CLIENT_ID }} -p ${{ secrets.ARM_CLIENT_SECRET }} --tenant ${{ secrets.ARM_TENANT_ID }}
-        az account set --subscription ${{ secrets.ARM_SUBSCRIPTION_ID }}
+        az login --service-principal -u ${{ steps.creds.outputs.client_id }} -p ${{ steps.creds.outputs.client_secret }} --tenant ${{ steps.creds.outputs.tenant_id }}
+        az account set --subscription
     
     - name: Build and push Docker image to Azure Container Registry
       run: |
