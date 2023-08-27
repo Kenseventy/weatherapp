@@ -1,0 +1,28 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches:
+      - main  # Trigger this workflow on push to the main branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Build and push Docker image to Azure Container Registry
+      run: |
+        docker build -t ${{ secrets.AZURE_REGISTRY_LOGIN_SERVER }}/weatherapp:latest .
+        docker login ${{ secrets.AZURE_REGISTRY_LOGIN_SERVER }} -u ${{ secrets.AZURE_REGISTRY_USERNAME }} -p ${{ secrets.AZURE_REGISTRY_PASSWORD }}
+        docker push ${{ secrets.AZURE_REGISTRY_LOGIN_SERVER }}/weatherapp:latest
+
+    - name: Logout from Azure
+      run: az logout
