@@ -39,6 +39,7 @@ def get_weather_data(city_name):
 @app.route('/')
 def index():
     # Check temperature alert from Azure Function for Winnipeg
+    # env variable to protect URL
     ALERT_FUNCTION_URL = os.environ.get('ALERT_FUNCTION_URL')
     alert_response = requests.get(ALERT_FUNCTION_URL)
     if 'Alert' in alert_response.text:
