@@ -14,10 +14,10 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Login to Azure
-      uses: azure/login@v1
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
-
+      run: |
+        az login --service-principal -u ${{ secrets.ARM_CLIENT_ID }} -p ${{ secrets.ARM_CLIENT_SECRET }} --tenant ${{ secrets.ARM_TENANT_ID }}
+        az account set --subscription ${{ secrets.ARM_SUBSCRIPTION_ID }}
+    
     - name: Build and push Docker image to Azure Container Registry
       run: |
         docker build -t ${{ secrets.AZURE_REGISTRY_LOGIN_SERVER }}/weatherapp:latest .
