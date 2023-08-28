@@ -1,4 +1,4 @@
-name: Deploy Python project to Azure Function App
+name: Azure Function App deploy
 
 on:
   [push]
@@ -18,7 +18,6 @@ env:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    environment: dev
     steps:
     - name: 'Checkout GitHub Action'
       uses: actions/checkout@v3
