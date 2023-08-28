@@ -35,4 +35,4 @@ jobs:
     # Ensure you have the Azure credentials set up as GitHub Secrets
     env:
       AZURE_FUNCTIONAPP_PUBLISH_PROFILE: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
-      AZURE_WEBAPP_PACKAGE_PATH: '.' # The path to the function app code
+      AZURE_WEBAPP_PACKAGE_PATH: './WeatherFunction' # The path to the function app code
