@@ -31,10 +31,20 @@ jobs:
       run: terraform plan -no-color
       continue-on-error: true
 
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+
+    - name: Setup Terraform
+      uses: azure/setup-terraform@v1
+
+
     - name: Terraform Apply
-      env:
-        AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-        AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-        AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
-        AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
       run: terraform apply -auto-approve
+
+
+    - name: Logout from Azure
+      run: az logout
+
