@@ -1,0 +1,38 @@
+name: CI/CD for Azure Function
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+        pip install azure-functions
+
+    - name: Package Azure Function
+      run: func pack
+
+    - name: Deploy to Azure Functions
+      uses: azure/functions-action@v1
+      with:
+        app-name: weathertrackerfunction
+        package: . # the current directory, which should now contain the packaged function
+
+    # Ensure you have the Azure credentials set up as GitHub Secrets
+    env:
+      AZURE_FUNCTIONAPP_PUBLISH_PROFILE: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
+      AZURE_WEBAPP_PACKAGE_PATH: '.' # The path to the function app code
