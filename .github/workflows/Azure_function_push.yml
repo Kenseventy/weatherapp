@@ -1,38 +1,47 @@
-name: CI/CD for Azure Function
+name: Deploy Python project to Azure Function App
 
 on:
-  push:
-    branches:
-      - main
+  [push]
+
+# CONFIGURATION
+# For help, go to https://github.com/Azure/Actions
+#
+# 1. Set up the following secrets in your repository:
+#   AZURE_FUNCTIONAPP_PUBLISH_PROFILE
+#
+# 2. Change these variables for your configuration:
+env:
+  AZURE_FUNCTIONAPP_NAME: 'weathertrackerfunction'   # set this to your function app name on Azure
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: 'WeatherFunction'       # set this to the path to your function app project, defaults to the repository root
+  PYTHON_VERSION: '3.8'                     # set this to the python version to use (e.g. '3.6', '3.7', '3.8')
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
-
+    environment: dev
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+    - name: 'Checkout GitHub Action'
+      uses: actions/checkout@v3
 
-    - name: Set up Python
-      uses: actions/setup-python@v2
+    - name: Setup Python ${{ env.PYTHON_VERSION }} Environment
+      uses: actions/setup-python@v4
       with:
-        python-version: 3.8
+        python-version: ${{ env.PYTHON_VERSION }}
 
-    - name: Install dependencies
+    - name: 'Resolve Project Dependencies Using Pip'
+      shell: bash
       run: |
-        pip install -r requirements.txt
-        pip install azure-functions
+        pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt --target=".python_packages/lib/site-packages"
+        popd
 
-    - name: Package Azure Function
-      run: func pack
-
-    - name: Deploy to Azure Functions
-      uses: azure/functions-action@v1
+    - name: 'Run Azure Functions Action'
+      uses: Azure/functions-action@v1
+      id: fa
       with:
-        app-name: weathertrackerfunction
-        package: . # the current directory, which should now contain the packaged function
-
-    # Ensure you have the Azure credentials set up as GitHub Secrets
-    env:
-      AZURE_FUNCTIONAPP_PUBLISH_PROFILE: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
-      AZURE_WEBAPP_PACKAGE_PATH: './WeatherFunction' # The path to the function app code
+        app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
+        package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
+        publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
+        scm-do-build-during-deployment: true
+        enable-oryx-build: true
