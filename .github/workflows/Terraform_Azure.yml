@@ -37,10 +37,6 @@ jobs:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
 
 
-    - name: Setup Terraform
-      uses: azure/setup-terraform@v1
-
-
     - name: Terraform Apply
       run: terraform apply -auto-approve
 
