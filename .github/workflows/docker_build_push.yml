@@ -20,9 +20,9 @@ jobs:
 
     - name: Build and push Docker image to Azure Container Registry
       run: |
-        docker build -t ${{ secrets.AZURE_REGISTRY_LOGIN_SERVER }}/weatherapp:latest .
+        docker build -t ${{ secrets.AZURE_REGISTRY_LOGIN_SERVER }}/weather_app:v2 .
         docker login ${{ secrets.AZURE_REGISTRY_LOGIN_SERVER }} -u ${{ secrets.AZURE_REGISTRY_USERNAME }} -p ${{ secrets.AZURE_REGISTRY_PASSWORD }}
-        docker push ${{ secrets.AZURE_REGISTRY_LOGIN_SERVER }}/weatherapp:latest
+        docker push ${{ secrets.AZURE_REGISTRY_LOGIN_SERVER }}/weather_app:v2
 
     - name: Logout from Azure
       run: az logout
